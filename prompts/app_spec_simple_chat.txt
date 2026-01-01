@@ -1,0 +1,241 @@
+<project_specification>
+  <project_name>Claude Chat - Simple AI Chat Interface</project_name>
+
+  <overview>
+    A clean, minimal Claude chat interface with conversation management and model selection.
+    Two-column layout with sidebar and chat area. Light/dark theme support.
+    Focused on core chat functionality without complex features like artifacts or projects.
+  </overview>
+
+  <technology_stack>
+    <api_key>
+      You can use an API key located at /tmp/api-key for testing. You will not be allowed to read this file, but you can reference it in code.
+    </api_key>
+    <frontend>
+      <framework>React with Vite</framework>
+      <styling>Tailwind CSS (via CDN)</styling>
+      <state_management>React hooks and context</state_management>
+      <routing>React Router for navigation</routing>
+      <markdown>React Markdown for message rendering</markdown>
+      <code_highlighting>Syntax highlighting for code blocks</code_highlighting>
+      <port>Only launch on port {frontend_port}</port>
+    </frontend>
+    <backend>
+      <runtime>Node.js with Express</runtime>
+      <database>SQLite with better-sqlite3</database>
+      <api_integration>Claude API for chat completions</api_integration>
+      <streaming>Server-Sent Events for streaming responses</streaming>
+    </backend>
+  </technology_stack>
+
+  <prerequisites>
+    <environment_setup>
+      - Repository includes .env with VITE_ANTHROPIC_API_KEY configured
+      - Frontend dependencies pre-installed via pnpm
+      - Backend code goes in /server directory
+      - Install backend dependencies as needed
+    </environment_setup>
+  </prerequisites>
+
+  <core_features>
+    <chat_interface>
+      - Clean, centered chat layout with message bubbles
+      - Streaming message responses with typing indicator
+      - Markdown rendering with proper formatting
+      - Code blocks with syntax highlighting and copy button
+      - Multi-turn conversations with context
+      - Stop generation button during streaming
+      - Auto-resize textarea input
+      - Keyboard shortcuts (Enter to send, Shift+Enter for newline)
+    </chat_interface>
+
+    <conversation_management>
+      - Create new conversations
+      - Conversation list in sidebar (grouped by date)
+      - Rename conversations (inline edit)
+      - Delete conversations with confirmation
+      - Search conversations by title
+      - Auto-generate title from first exchange
+    </conversation_management>
+
+    <model_selection>
+      - Model selector dropdown:
+        - Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) - default
+        - Claude Haiku 4.5 (claude-haiku-4-5-20251001)
+        - Claude Opus 4.5 (claude-opus-4-5-20251101)
+      - Switch models mid-conversation
+    </model_selection>
+
+    <theme>
+      - Light/Dark mode toggle
+      - System preference detection (auto)
+    </theme>
+  </core_features>
+
+  <database_schema>
+    <tables>
+      <conversations>
+        - id TEXT PRIMARY KEY
+        - title TEXT
+        - model TEXT DEFAULT 'claude-sonnet-4-5-20250929'
+        - created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        - updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      </conversations>
+
+      <messages>
+        - id TEXT PRIMARY KEY
+        - conversation_id TEXT NOT NULL (FK to conversations)
+        - role TEXT NOT NULL ('user' | 'assistant')
+        - content TEXT NOT NULL
+        - created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      </messages>
+    </tables>
+  </database_schema>
+
+  <api_endpoints>
+    <conversations>
+      - GET /api/conversations (list all)
+      - POST /api/conversations (create new)
+      - GET /api/conversations/:id (get with messages)
+      - PUT /api/conversations/:id (update/rename)
+      - DELETE /api/conversations/:id (delete)
+    </conversations>
+
+    <messages>
+      - POST /api/conversations/:id/messages (send message, returns SSE stream)
+    </messages>
+
+    <models>
+      - GET /api/models (list available models)
+    </models>
+  </api_endpoints>
+
+  <ui_layout>
+    <two_column_layout>
+      ┌──────────────┬─────────────────────────────────────┐
+      │   Sidebar    │           Chat Area                 │
+      │              │                                     │
+      │ [+ New Chat] │  Conversation Title    [Model v]    │
+      │              │  ───────────────────────────────    │
+      │ Search...    │                                     │
+      │              │   User message bubble               │
+      │ Today        │                                     │
+      │  - Chat 1    │   Assistant response                │
+      │  - Chat 2    │   with markdown and code blocks     │
+      │              │                                     │
+      │ Yesterday    │                                     │
+      │  - Chat 3    │                                     │
+      │              │                                     │
+      │              │  ───────────────────────────────    │
+      │ [Theme]      │  [Type message...          ] [Send] │
+      └──────────────┴─────────────────────────────────────┘
+    </two_column_layout>
+
+    <sidebar>
+      - New chat button (prominent)
+      - Search input
+      - Conversations grouped by date (Today, Yesterday, Previous 7 days, Older)
+      - Theme toggle at bottom
+    </sidebar>
+
+    <chat_area>
+      - Header: Conversation title (editable) + Model selector
+      - Message history (scrollable)
+      - Welcome screen for new/empty conversations
+      - Input area with send button
+      - Stop button during streaming
+    </chat_area>
+  </ui_layout>
+
+  <design_system>
+    <colors>
+      Light Mode:
+        - Background: #FFFFFF
+        - Surface: #F5F5F5
+        - Text: #1A1A1A
+        - Border: #E5E5E5
+        - Primary: #CC785C
+
+      Dark Mode:
+        - Background: #1A1A1A
+        - Surface: #2A2A2A
+        - Text: #E5E5E5
+        - Border: #404040
+        - Primary: #CC785C
+    </colors>
+
+    <typography>
+      - System font: Inter, SF Pro, Roboto, system-ui
+      - Code font: JetBrains Mono, Consolas, Monaco
+    </typography>
+
+    <message_bubbles>
+      - User: Right-aligned, subtle background
+      - Assistant: Left-aligned, no background
+    </message_bubbles>
+  </design_system>
+
+  <implementation_steps>
+    <step number="1">
+      <title>Backend Foundation</title>
+      <tasks>
+        - Initialize Express server
+        - Set up SQLite database with schema
+        - Create conversations CRUD endpoints
+        - Implement Claude API integration with streaming
+      </tasks>
+    </step>
+
+    <step number="2">
+      <title>Chat Interface</title>
+      <tasks>
+        - Create two-column layout
+        - Build message display with markdown rendering
+        - Add code block syntax highlighting with copy button
+        - Implement streaming with SSE
+        - Build input area with auto-resize
+      </tasks>
+    </step>
+
+    <step number="3">
+      <title>Conversation Management</title>
+      <tasks>
+        - Create conversation list component
+        - Add new conversation creation
+        - Implement conversation switching
+        - Build rename and delete functionality
+        - Add search filtering
+        - Group conversations by date
+      </tasks>
+    </step>
+
+    <step number="4">
+      <title>Model Selection and Theme</title>
+      <tasks>
+        - Add model selector dropdown
+        - Implement model switching
+        - Add light/dark theme toggle
+        - Persist theme preference
+      </tasks>
+    </step>
+
+    <step number="5">
+      <title>Polish</title>
+      <tasks>
+        - Add loading states and typing indicators
+        - Implement stop generation
+        - Add keyboard shortcuts
+        - Responsive tweaks
+        - Error handling
+      </tasks>
+    </step>
+  </implementation_steps>
+
+  <success_criteria>
+    - Streaming chat works smoothly
+    - Conversations persist and load correctly
+    - Model switching works mid-conversation
+    - Theme toggle works with persistence
+    - Clean, responsive UI matching claude.ai aesthetic
+  </success_criteria>
+</project_specification>

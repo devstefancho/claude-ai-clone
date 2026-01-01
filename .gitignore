@@ -3,3 +3,38 @@ generations/
 
 # Log files
 logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings (contains user-specific paths)
+.claude/settings.local.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
